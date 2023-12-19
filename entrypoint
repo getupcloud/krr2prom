@@ -16,32 +16,34 @@ function cleanup()
         echo Shutting down
         pkill python3
         service nginx stop
-    } | log
+    } 2>&1 | log
     exit 0
 }
 
 function log()
 {
-    sed -e "s/^/$(date): /"
+    while read line; do
+        echo '{"time":"'$(date)'","message":"'${line}'"}'
+    done
 }
 
 {
-    echo Scan frequency: $SCAN_FREQUENCY | log
-    echo Max workers: $MAX_WORKERS | log
+    echo Scan frequency: $SCAN_FREQUENCY
+    echo Max workers: $MAX_WORKERS
     echo Prometheus URL: ${PROMETHEUS_URL:-<auto-discovery>}
-} | log
+} 2>&1 | log
 
 trap cleanup HUP INT
 
 mkdir -p ${DATA_DIR}
-nginx -t | log
+nginx -t 2>&1 | log
 
 while true; do
     if ! service nginx status &>/dev/null; then
-        service nginx start | log
+        service nginx start 2>&1 | log
     fi
 
-    echo Starting KRR | log
+    echo Starting KRR 2>&1 | log
     python3 krr.py simple ${OPTS[@]} -f json \
         | sed -ne '/^{/,/^}/p' \
         | tr -d '\n' \
@@ -51,7 +53,7 @@ while true; do
 
     mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
     n=$(wc -l $DATA_DIR/result.prom)
-    echo Generated $n metrics in $DATA_DIR/result.prom | log
+    echo Generated $n metrics in $DATA_DIR/result.prom 2>&1 | log
 
     sleep $SCAN_FREQUENCY
 done
