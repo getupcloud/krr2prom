@@ -1,0 +1,41 @@
+#!/bin/bash
+
+. .venv/bin/activate
+DATA_DIR=${DATA_DIR:-/data}
+
+mkdir -p ${DATA_DIR}
+
+OPTS=( "--max-workers=${MAX_WORKERS:-1}" )
+
+if [ -n "$PROMETHEUS_URL" ]; then
+    OPTS+=( "--prometheus-url=${PROMETHEUS_URL}" )
+fi
+
+function cleanup()
+{
+    pkill python
+    service nginx stop
+    exit 0
+}
+
+trap HUP cleanup
+
+while true; do
+    if ! service nginx status; then
+        echo Starting nginx...
+        nginx
+    fi
+
+    python3 krr.py simple ${OPTS[@]} -f json \
+        | sed -ne '/^{/,/^}/p' \
+        | tr -d '\n' \
+        | jq -r > $DATA_DIR/result.json
+
+    python krr2prom.py <$DATA_DIR/result.json >$DATA_DIR/.result.prom
+
+    mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
+    n=$(wc -l $DATA_DIR/result.prom)
+    echo -n Generated $n metrics in $DATA_DIR/result.prom
+
+    sleep ${SLEEP:-1m}
+done

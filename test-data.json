@@ -1,0 +1,170 @@
+{
+  "scans": [
+    {
+      "object": {
+        "cluster": null,
+        "name": "my-api",
+        "container": "my-api",
+        "pods": [
+          {
+            "name": "my-api-dd4c948b7-c45v4",
+            "deleted": true
+          },
+          {
+            "name": "my-api-5f7b894fbb-5tshv",
+            "deleted": true
+          },
+          {
+            "name": "my-api-dd4c948b7-xzvml",
+            "deleted": true
+          },
+          {
+            "name": "my-api-5f7b894fbb-g9d6s",
+            "deleted": true
+          },
+          {
+            "name": "my-api-9694d7d6c-mlm98",
+            "deleted": false
+          },
+          {
+            "name": "my-api-9694d7d6c-qrsps",
+            "deleted": false
+          }
+        ],
+        "hpa": null,
+        "namespace": "api",
+        "kind": "Deployment",
+        "allocations": {
+          "requests": {
+            "cpu": 0.05,
+            "memory": 83886080
+          },
+          "limits": {
+            "cpu": 0.1,
+            "memory": 134217728
+          },
+          "info": {}
+        },
+        "warnings": []
+      },
+      "recommended": {
+        "requests": {
+          "cpu": {
+            "value": 0.01,
+            "severity": "GOOD"
+          },
+          "memory": {
+            "value": 104857600,
+            "severity": "GOOD"
+          }
+        },
+        "limits": {
+          "cpu": {
+            "value": null,
+            "severity": "WARNING"
+          },
+          "memory": {
+            "value": 104857600,
+            "severity": "GOOD"
+          }
+        },
+        "info": {
+          "cpu": null,
+          "memory": null
+        }
+      },
+      "severity": "WARNING"
+    },
+    {
+      "object": {
+        "cluster": null,
+        "name": "my-api",
+        "container": "api",
+        "pods": [
+          {
+            "name": "my-api-dd4c948b7-c45v4",
+            "deleted": true
+          },
+          {
+            "name": "my-api-5f7b894fbb-5tshv",
+            "deleted": true
+          },
+          {
+            "name": "my-api-dd4c948b7-xzvml",
+            "deleted": true
+          },
+          {
+            "name": "my-api-5f7b894fbb-g9d6s",
+            "deleted": true
+          },
+          {
+            "name": "my-api-9694d7d6c-mlm98",
+            "deleted": false
+          },
+          {
+            "name": "my-api-9694d7d6c-qrsps",
+            "deleted": false
+          }
+        ],
+        "hpa": null,
+        "namespace": "my-backend",
+        "kind": "Deployment",
+        "allocations": {
+          "requests": {
+            "cpu": 0.05,
+            "memory": 83886080
+          },
+          "limits": {
+            "cpu": 0.1,
+            "memory": 134217728
+          },
+          "info": {}
+        },
+        "warnings": []
+      },
+      "recommended": {
+        "requests": {
+          "cpu": {
+            "value": 0.01,
+            "severity": "GOOD"
+          },
+          "memory": {
+            "value": 104857600,
+            "severity": "GOOD"
+          }
+        },
+        "limits": {
+          "cpu": {
+            "value": null,
+            "severity": "WARNING"
+          },
+          "memory": {
+            "value": 104857600,
+            "severity": "GOOD"
+          }
+        },
+        "info": {
+          "cpu": null,
+          "memory": null
+        }
+      },
+      "severity": "WARNING"
+    }
+  ],
+  "score": 30,
+  "resources": [
+    "cpu",
+    "memory"
+  ],
+  "description": "Simple Strategy\n\nCPU request: 99.0% percentile, limit: unset\nMemory request: max + 15.0%, limit: max + 15.0%\nHistory: 336.0 hours\nStep: 1.25 minutes\n\nThis strategy does not work with objects with HPA defined (Horizontal Pod Autoscaler).\nIf HPA is defined for CPU or Memory, the strategy will return \"?\" for that resource.\n\nLearn more: https://github.com/robusta-dev/krr#algorithm",
+  "strategy": {
+    "name": "simple",
+    "settings": {
+      "history_duration": 336,
+      "timeframe_duration": 1.25,
+      "cpu_percentile": 99,
+      "memory_buffer_percentage": 15,
+      "points_required": 100
+    }
+  }
+}
