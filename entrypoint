@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -eu
+
 . .venv/bin/activate
 DATA_DIR=${DATA_DIR:-/data}
 

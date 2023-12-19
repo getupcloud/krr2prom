@@ -7,6 +7,7 @@ RUN apt update \
         apt-utils \
         git \
         jq \
+        nginx \
         python3 \
         python3-pip \
     && git clone https://github.com/robusta-dev/krr.git /app \
