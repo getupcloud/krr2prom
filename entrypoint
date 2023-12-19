@@ -21,9 +21,10 @@ function cleanup()
 
 trap cleanup HUP INT
 
+nginx -t
+
 while true; do
     if ! service nginx status &>/dev/null; then
-        echo Starting nginx...
         service nginx start
     fi
 
