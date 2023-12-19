@@ -3,9 +3,7 @@
 set -e
 
 DATA_DIR=${DATA_DIR:-/data}
-
-mkdir -p ${DATA_DIR}
-
+SCAN_FREQUENCY=${SCAN_FREQUENCY:-1h}
 OPTS=( "--max-workers=${MAX_WORKERS:-1}" )
 
 if [ -n "$PROMETHEUS_URL" ]; then
@@ -14,22 +12,36 @@ fi
 
 function cleanup()
 {
-    echo Shutting down
-    pkill python3
-    service nginx stop
+    {
+        echo Shutting down
+        pkill python3
+        service nginx stop
+    } | log
     exit 0
 }
 
+function log()
+{
+    sed -e "s/^/$(date): /"
+}
+
+{
+    echo Scan frequency: $SCAN_FREQUENCY | log
+    echo Max workers: $MAX_WORKERS | log
+    echo Prometheus URL: ${PROMETHEUS_URL:-<auto-discovery>}
+} | log
+
 trap cleanup HUP INT
 
-nginx -t
+mkdir -p ${DATA_DIR}
+nginx -t | log
 
 while true; do
     if ! service nginx status &>/dev/null; then
-        service nginx start
+        service nginx start | log
     fi
 
-    echo $(date) Starting krr
+    echo Starting KRR | log
     python3 krr.py simple ${OPTS[@]} -f json \
         | sed -ne '/^{/,/^}/p' \
         | tr -d '\n' \
@@ -39,8 +51,7 @@ while true; do
 
     mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
     n=$(wc -l $DATA_DIR/result.prom)
-    echo -n Generated $n metrics in $DATA_DIR/result.prom
+    echo Generated $n metrics in $DATA_DIR/result.prom | log
 
-    sleep ${SLEEP:-1h}
-    echo $(date) Finished krr
+    sleep $SCAN_FREQUENCY
 done
