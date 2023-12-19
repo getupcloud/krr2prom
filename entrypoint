@@ -14,7 +14,7 @@ fi
 
 function cleanup()
 {
-    pkill python
+    pkill python3
     service nginx stop
     exit 0
 }
@@ -32,7 +32,7 @@ while true; do
         | tr -d '\n' \
         | jq -r > $DATA_DIR/result.json
 
-    python krr2prom.py <$DATA_DIR/result.json >$DATA_DIR/.result.prom
+    python3 krr2prom.py <$DATA_DIR/result.json >$DATA_DIR/.result.prom
 
     mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
     n=$(wc -l $DATA_DIR/result.prom)
