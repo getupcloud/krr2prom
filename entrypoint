@@ -22,9 +22,9 @@ function cleanup()
 trap cleanup HUP INT
 
 while true; do
-    if ! service nginx status; then
+    if ! service nginx status &>/dev/null; then
         echo Starting nginx...
-        nginx
+        service nginx start
     fi
 
     python3 krr.py simple ${OPTS[@]} -f json \
