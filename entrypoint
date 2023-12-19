@@ -2,7 +2,6 @@
 
 set -eu
 
-. .venv/bin/activate
 DATA_DIR=${DATA_DIR:-/data}
 
 mkdir -p ${DATA_DIR}
