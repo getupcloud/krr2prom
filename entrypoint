@@ -14,6 +14,7 @@ fi
 
 function cleanup()
 {
+    echo Shutting down
     pkill python3
     service nginx stop
     exit 0
@@ -28,6 +29,7 @@ while true; do
         service nginx start
     fi
 
+    echo $(date) Starting krr
     python3 krr.py simple ${OPTS[@]} -f json \
         | sed -ne '/^{/,/^}/p' \
         | tr -d '\n' \
@@ -40,4 +42,5 @@ while true; do
     echo -n Generated $n metrics in $DATA_DIR/result.prom
 
     sleep ${SLEEP:-1h}
+    echo $(date) Finished krr
 done
