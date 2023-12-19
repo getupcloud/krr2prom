@@ -32,7 +32,7 @@ while true; do
         service nginx start
     fi
 
-    echo Starting KRR
+    echo Starting KRR: python3 krr.py simple ${OPTS[@]} -f json
     python3 krr.py simple ${OPTS[@]} -f json \
         | sed -ne '/^{/,/^}/p' \
         | tr -d '\n' \
