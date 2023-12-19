@@ -5,6 +5,7 @@ WORKDIR /app
 RUN apt update \
     && apt install -y \
         apt-utils \
+        curl \
         git \
         jq \
         nginx \

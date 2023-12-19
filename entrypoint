@@ -39,5 +39,5 @@ while true; do
     n=$(wc -l $DATA_DIR/result.prom)
     echo -n Generated $n metrics in $DATA_DIR/result.prom
 
-    sleep ${SLEEP:-1m}
+    sleep ${SLEEP:-1h}
 done
