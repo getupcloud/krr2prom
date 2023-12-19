@@ -12,38 +12,27 @@ fi
 
 function cleanup()
 {
-    {
-        echo Shutting down
-        pkill python3
-        service nginx stop
-    } 2>&1 | log
+    echo Shutting down
+    pkill python3
+    service nginx stop
     exit 0
 }
 
-function log()
-{
-    while read line; do
-        echo '{"time":"'$(date)'","message":"'${line}'"}'
-    done
-}
-
-{
-    echo Scan frequency: $SCAN_FREQUENCY
-    echo Max workers: $MAX_WORKERS
-    echo Prometheus URL: ${PROMETHEUS_URL:-<auto-discovery>}
-} 2>&1 | log
+echo Scan frequency: $SCAN_FREQUENCY
+echo Max workers: $MAX_WORKERS
+echo Prometheus URL: ${PROMETHEUS_URL:-<auto-discovery>}
 
 trap cleanup HUP INT
 
 mkdir -p ${DATA_DIR}
-nginx -t 2>&1 | log
+nginx -t
 
 while true; do
     if ! service nginx status &>/dev/null; then
-        service nginx start 2>&1 | log
+        service nginx start
     fi
 
-    echo Starting KRR 2>&1 | log
+    echo Starting KRR
     python3 krr.py simple ${OPTS[@]} -f json \
         | sed -ne '/^{/,/^}/p' \
         | tr -d '\n' \
@@ -52,8 +41,8 @@ while true; do
     python3 krr2prom.py <$DATA_DIR/result.json >$DATA_DIR/.result.prom
 
     mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
-    n=$(wc -l $DATA_DIR/result.prom)
-    echo Generated $n metrics in $DATA_DIR/result.prom 2>&1 | log
+    n=$(wc -l $DATA_DIR/result.prom | cut -f 1 -d ' ')
+    echo Generated $n metrics in $DATA_DIR/result.prom
 
     sleep $SCAN_FREQUENCY
 done
