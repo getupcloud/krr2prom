@@ -4,7 +4,10 @@ import json
 import sys
 
 def number_or_none(value):
-    return int(value) if value is not None else None
+    try:
+        return int(value) if value is not None else None
+    except:
+        return None
 
 
 def add_metric(data, name, labels, value):
