@@ -19,7 +19,7 @@ function cleanup()
     exit 0
 }
 
-trap HUP cleanup
+trap cleanup HUP INT
 
 while true; do
     if ! service nginx status; then
