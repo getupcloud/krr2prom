@@ -67,7 +67,7 @@ if __name__ == "__main__":
     })
 
     stop_event = Event()
-    krr_thread = Thread(target=krr_runner, args=(stop_event,), daemon=False)
+    krr_thread = Thread(target=krr_runner, args=(scan_frequency, stop_event), daemon=False)
     krr_thread.start()
 
     print("START FLASK")

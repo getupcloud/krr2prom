@@ -18,9 +18,10 @@ WORKDIR /app
 
 ENV PYTHONPATH=/app:/krr
 
+COPY requirements.txt /app/
+RUN pip install -r requirements.txt
+
 COPY krr2prom /app/krr2prom
 COPY formatter-prometheus-exporter.py formatter-prometheus.py entrypoint requirements.txt /app/
-
-RUN pip install -r requirements.txt
 
 ENTRYPOINT ["/app/entrypoint"]
