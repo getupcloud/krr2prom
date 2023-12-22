@@ -42,17 +42,18 @@ def prometheus_exporter_formatter(result: Result) -> str:
 def krr_runner(scan_frequency, stop_event):
     print("START KRR THREAD")
     cycle = 0
+    round = 0
     while not stop_event.wait(1):
         if cycle > 0 and cycle < scan_frequency:
             cycle += 1
             continue
-
-        print(f"START KRR CYCLE {int(cycle/scan_frequency)}")
+        cycle = 1
+        round += 1
+        print(f"START KRR ROUND {round}")
         t = Thread(target=robusta_krr.run)
         t.start()
         t.join()
-        print(f"END KRR CYCLE {cycle}")
-        cycle = 1
+        print(f"END KRR ROUND {round}")
 
     print("STOP KRR THREAD")
 

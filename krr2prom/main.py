@@ -91,12 +91,12 @@ def collect_metrics(result):
         name      = obj.name
         container = obj.container
 
-        if kind in ["Deployment", "DaemonSet", "StatefulSet"]:
-            set_metric(KRR_ALLOCATIONS_REQUESTS_CPU,    alloc.requests['cpu'],      kind, name, container, namespace)
-            set_metric(KRR_ALLOCATIONS_REQUESTS_MEMORY, alloc.requests['memory'],   kind, name, container, namespace)
-            set_metric(KRR_ALLOCATIONS_LIMITS_CPU,      alloc.limits['cpu'],        kind, name, container, namespace)
-            set_metric(KRR_ALLOCATIONS_LIMITS_MEMORY,   alloc.limits['memory'],     kind, name, container, namespace)
-            set_metric(KRR_RECOMMENDED_REQUESTS_CPU,    recom.requests['cpu'],      kind, name, container, namespace, severity(rec.requests['cpu']))
-            set_metric(KRR_RECOMMENDED_REQUESTS_MEMORY, recom.requests['memory'],   kind, name, container, namespace, severity(rec.requests['memory']))
-            set_metric(KRR_RECOMMENDED_LIMITS_CPU,      recom.limits['cpu'],        kind, name, container, namespace, severity(rec.limits['cpu']))
-            set_metric(KRR_RECOMMENDED_LIMITS_MEMORY,   recom.limits['memory'],     kind, name, container, namespace, severity(rec.limits['memory']))
+        #if kind in ["Deployment", "DaemonSet", "StatefulSet"]:
+        set_metric(KRR_ALLOCATIONS_REQUESTS_CPU,    alloc.requests['cpu'],      kind, name, container, namespace)
+        set_metric(KRR_ALLOCATIONS_REQUESTS_MEMORY, alloc.requests['memory'],   kind, name, container, namespace)
+        set_metric(KRR_ALLOCATIONS_LIMITS_CPU,      alloc.limits['cpu'],        kind, name, container, namespace)
+        set_metric(KRR_ALLOCATIONS_LIMITS_MEMORY,   alloc.limits['memory'],     kind, name, container, namespace)
+        set_metric(KRR_RECOMMENDED_REQUESTS_CPU,    recom.requests['cpu'],      kind, name, container, namespace, severity(rec.requests['cpu']))
+        set_metric(KRR_RECOMMENDED_REQUESTS_MEMORY, recom.requests['memory'],   kind, name, container, namespace, severity(rec.requests['memory']))
+        set_metric(KRR_RECOMMENDED_LIMITS_CPU,      recom.limits['cpu'],        kind, name, container, namespace, severity(rec.limits['cpu']))
+        set_metric(KRR_RECOMMENDED_LIMITS_MEMORY,   recom.limits['memory'],     kind, name, container, namespace, severity(rec.limits['memory']))
