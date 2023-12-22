@@ -1,7 +1,5 @@
 FROM debian:bullseye
 
-WORKDIR /app
-
 RUN apt update \
     && apt install -y \
         apt-utils \
@@ -12,11 +10,17 @@ RUN apt update \
         procps \
         python3 \
         python3-pip \
-    && git clone https://github.com/robusta-dev/krr.git /app \
-    && pip install -r requirements.txt \
+    && git clone https://github.com/robusta-dev/krr.git /krr \
+    && pip install -r /krr/requirements.txt \
     && apt-get clean
 
-COPY nginx.conf /etc/nginx/nginx.conf
-COPY krr2prom.py entrypoint /app/
+WORKDIR /app
+
+ENV PYTHONPATH=/app:/krr
+
+COPY krr2prom /app/krr2prom
+COPY formatter-prometheus-exporter.py formatter-prometheus.py entrypoint requirements.txt /app/
+
+RUN pip install -r requirements.txt
 
 CMD ["/app/entrypoint"]

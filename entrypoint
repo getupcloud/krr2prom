@@ -2,47 +2,36 @@
 
 set -e
 
-DATA_DIR=${DATA_DIR:-/data}
-SCAN_FREQUENCY=${SCAN_FREQUENCY:-1h}
-OPTS=( "--max-workers=${MAX_WORKERS:-1}" )
-
-if [ -n "$PROMETHEUS_URL" ]; then
-    OPTS+=( "--prometheus-url=${PROMETHEUS_URL}" )
-fi
-
-function cleanup()
+function usage()
 {
-    echo Shutting down
-    pkill python3
-    service nginx stop
-    exit 0
+    echo "Usage: $0 [prometheus|prometheus-exporter port frequency] [krr-flags...]"
+    echo '  prometheus                              Single-shot, print metrics to stdout.'
+    echo '  prometheus-exporter port frequency      Server, exposes metrics on 0.0.0.0:$METRICS_PORT/metrics.'
 }
 
-echo Scan frequency: $SCAN_FREQUENCY
-echo Max workers: $MAX_WORKERS
-echo Prometheus URL: ${PROMETHEUS_URL:-<auto-discovery>}
+export EXEC_MODE="$1"
+shift || true
+echo "Exec Mode: $EXEC_MODE"
 
-trap cleanup HUP INT
+case "$EXEC_MODE" in
+    prometheus) : ;;
+    prometheus-exporter)
+        if [ $# -lt 2 ]; then
+            usage
+            exit 1
+        fi
 
-mkdir -p ${DATA_DIR}
-nginx -t
+        export METRICS_PORT=$1
+        export SCAN_FREQUENCY=$2
+        shift 2
+        echo Metrics port: $METRICS_PORT
+        echo Scan frequency: $SCAN_FREQUENCY
+    ;;
+    *)
+        usage
+        exit 1
+esac
 
-while true; do
-    if ! service nginx status &>/dev/null; then
-        service nginx start
-    fi
-
-    echo Starting KRR: python3 krr.py simple ${OPTS[@]} -f json
-    python3 krr.py simple ${OPTS[@]} -f json \
-        | sed -ne '/^{/,/^}/p' \
-        | tr -d '\n' \
-        | jq -r > $DATA_DIR/result.json
-
-    python3 krr2prom.py <$DATA_DIR/result.json >$DATA_DIR/.result.prom
-
-    mv $DATA_DIR/.result.prom $DATA_DIR/result.prom
-    n=$(wc -l $DATA_DIR/result.prom | cut -f 1 -d ' ')
-    echo Generated $n metrics in $DATA_DIR/result.prom
-
-    sleep $SCAN_FREQUENCY
-done
+COMMAND="python3 formatter-${EXEC_MODE}.py simple --formatter $EXEC_MODE ${@}"
+set -x
+exec $COMMAND
