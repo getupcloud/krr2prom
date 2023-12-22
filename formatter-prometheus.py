@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 
+import time
 from prometheus_client import generate_latest
 from robusta_krr.api import formatters
 from robusta_krr.api.models import Result
@@ -13,3 +14,6 @@ def prometheus_formatter(result: Result) -> str:
 # Run it as `python3 ./formatter-prometheus.py simple --formater prometheus`
 if __name__ == "__main__":
     robusta_krr.run()
+    print("Sleeping forever...")
+    while True
+        time.sleep(100)
