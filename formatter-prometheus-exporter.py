@@ -36,7 +36,7 @@ def parse_time(delta):
 def prometheus_exporter_formatter(result: Result) -> str:
     collect_metrics(result)
     #return generate_latest()
-    return 'Processed {len(result.scans)} scans. Score={result.score}'
+    return f'Processed {len(result.scans)} scans. Score={result.score}'
 
 
 def krr_runner(scan_frequency, stop_event):
