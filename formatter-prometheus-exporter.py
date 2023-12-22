@@ -5,7 +5,7 @@ from datetime import timedelta
 from threading import Thread, Event
 from flask import Flask
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
-from prometheus_client import make_wsgi_app
+from prometheus_client import make_wsgi_app, generate_latest
 from robusta_krr.api import formatters
 from robusta_krr.api.models import Result
 from krr2prom import robusta_krr, collect_metrics
