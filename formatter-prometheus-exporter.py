@@ -57,7 +57,7 @@ def krr_runner(scan_frequency, stop_event):
 
 # Run it as `python3 ./formatter-prometheus-exporter.py simple --formater prometheus-exporter`
 if __name__ == "__main__":
-    scan_frequency = parse_time(os.environ.get('SCAN_FREQUENCY', '1h')))
+    scan_frequency = parse_time(os.environ.get('SCAN_FREQUENCY', '1h'))
     metrics_port = int(os.environ.get('METRICS_PORT', 8080))
 
     app = Flask(__name__)
