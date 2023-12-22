@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import sys, os
+import sys, os, re
 from threading import Thread, Event
 from flask import Flask
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -8,6 +8,27 @@ from prometheus_client import make_wsgi_app
 from robusta_krr.api import formatters
 from robusta_krr.api.models import Result
 from krr2prom import robusta_krr, collect_metrics
+
+
+# https://gist.github.com/santiagobasulto/698f0ff660968200f873a2f9d1c4113c
+def parse_time(delta):
+    """ Parses a human readable timedelta (3d5h19m) into a datetime.timedelta.
+    Delta includes:
+    * Xd days
+    * Xh hours
+    * Xm minutes
+    Values can be negative following timedelta's rules. Eg: -5h-30m
+    """
+    TIMEDELTA_REGEX = (r'((?P<days>-?\d+)d)?'
+                       r'((?P<hours>-?\d+)h)?'
+                       r'((?P<minutes>-?\d+)m)?')
+    TIMEDELTA_PATTERN = re.compile(TIMEDELTA_REGEX, re.IGNORECASE)
+    match = TIMEDELTA_PATTERN.match(delta)
+    if match:
+        parts = {k: int(v) for k, v in match.groupdict().items() if v}
+        return timedelta(**parts).total_seconds()
+    else:
+        return parse_time('1h')
 
 
 @formatters.register(display_name='prometheus-exporter', rich_console=False)
@@ -33,9 +54,10 @@ def krr_runner(scan_frequency, stop_event):
 
     print("STOP KRR THREAD")
 
+
 # Run it as `python3 ./formatter-prometheus-exporter.py simple --formater prometheus-exporter`
 if __name__ == "__main__":
-    scan_frequency = int(os.environ.get('SCAN_FREQUENCY', 600))
+    scan_frequency = parse_time(os.environ.get('SCAN_FREQUENCY', '1h')))
     metrics_port = int(os.environ.get('METRICS_PORT', 8080))
 
     app = Flask(__name__)
