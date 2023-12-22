@@ -9,6 +9,3 @@ build:
 release: test build
 	docker push $(IMAGE_NAME)
 	docker push $(IMAGE_LATEST)
-
-test:
-	python krr2prom.py < test-data.json
