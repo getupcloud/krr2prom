@@ -84,8 +84,7 @@ def collect_metrics(result):
         return rec.severity.split('.')[-1]
 
     for scan in result.scans:
-        obj, rec = scan.object, scan.recommended
-        alloc = obj.allocations
+        obj, alloc, recom = scan.object, scan.object.allocations, scan.recommended
 
         kind      = obj.kind
         namespace = obj.namespace
@@ -97,7 +96,7 @@ def collect_metrics(result):
             set_metric(KRR_ALLOCATIONS_REQUESTS_MEMORY, alloc.requests['memory'],   kind, name, container, namespace)
             set_metric(KRR_ALLOCATIONS_LIMITS_CPU,      alloc.limits['cpu'],        kind, name, container, namespace)
             set_metric(KRR_ALLOCATIONS_LIMITS_MEMORY,   alloc.limits['memory'],     kind, name, container, namespace)
-            set_metric(KRR_RECOMMENDED_REQUESTS_CPU,    rec.requests['cpu'],        kind, name, container, namespace, severity(rec.requests['cpu']))
-            set_metric(KRR_RECOMMENDED_REQUESTS_MEMORY, rec.requests['memory'],     kind, name, container, namespace, severity(rec.requests['memory']))
-            set_metric(KRR_RECOMMENDED_LIMITS_CPU,      rec.limits['cpu'],          kind, name, container, namespace, severity(rec.limits['cpu']))
-            set_metric(KRR_RECOMMENDED_LIMITS_MEMORY,   rec.limits['memory'],       kind, name, container, namespace, severity(rec.limits['memory']))
+            set_metric(KRR_RECOMMENDED_REQUESTS_CPU,    recom.requests['cpu'],      kind, name, container, namespace, severity(rec.requests['cpu']))
+            set_metric(KRR_RECOMMENDED_REQUESTS_MEMORY, recom.requests['memory'],   kind, name, container, namespace, severity(rec.requests['memory']))
+            set_metric(KRR_RECOMMENDED_LIMITS_CPU,      recom.limits['cpu'],        kind, name, container, namespace, severity(rec.limits['cpu']))
+            set_metric(KRR_RECOMMENDED_LIMITS_MEMORY,   recom.limits['memory'],     kind, name, container, namespace, severity(rec.limits['memory']))
