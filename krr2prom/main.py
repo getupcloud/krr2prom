@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 
 import sys
-
 from prometheus_client import Gauge
-
 import robusta_krr
+
 
 KRR_SCORE = Gauge(
     'krr_score',
@@ -63,12 +62,13 @@ KRR_RECOMMENDED_LIMITS_MEMORY = Gauge(
     [ 'kind', 'name', 'container', 'namespace', 'severity' ]
 )
 
-def is_number(value):
+
+def set_metric(metric, value, *labels):
     try:
-        float(value) or int(value)
-        return True
+        metric.labels(*labels).set(float(value))
     except TypeError:
-        return False
+        pass
+
 
 def collect_metrics(result):
     KRR_SCORE.labels(
@@ -90,12 +90,11 @@ def collect_metrics(result):
         container = obj.container
 
         if kind in ["Deployment", "DaemonSet", "StatefulSet"]:
-            if is_number(alloc.requests['cpu']): KRR_ALLOCATIONS_REQUESTS_CPU.labels(kind, name, container, namespace).set(alloc.requests['cpu'])
-            if is_number(alloc.requests['memory']): KRR_ALLOCATIONS_REQUESTS_MEMORY.labels(kind, name, container, namespace).set(alloc.requests['memory'])
-            if is_number(alloc.limits['cpu']): KRR_ALLOCATIONS_LIMITS_CPU.labels(kind, name, container, namespace).set(alloc.limits['cpu'])
-            if is_number(alloc.limits['memory']): KRR_ALLOCATIONS_LIMITS_MEMORY.labels(kind, name, container, namespace).set(alloc.limits['memory'])
-
-            if is_number(alloc.requests['cpu']): KRR_RECOMMENDED_REQUESTS_CPU.labels(kind, name, container, namespace, rec.requests['cpu'].severity).set(rec.requests['cpu'].value)
-            if is_number(alloc.requests['memory']): KRR_RECOMMENDED_REQUESTS_MEMORY.labels(kind, name, container, namespace, rec.requests['memory'].severity).set(rec.requests['memory'].value)
-            if is_number(alloc.limits['cpu']): KRR_RECOMMENDED_LIMITS_CPU.labels(kind, name, container, namespace, rec.limits['cpu'].severity).set(rec.limits['cpu'].value)
-            if is_number(alloc.limits['memory']): KRR_RECOMMENDED_LIMITS_MEMORY.labels(kind, name, container, namespace, rec.limits['memory'].severity).set(rec.limits['memory'].value)
+            set_metric(KRR_ALLOCATIONS_REQUESTS_CPU, alloc.requests['cpu'], kind, name, container, namespace)
+            set_metric(KRR_ALLOCATIONS_REQUESTS_MEMORY, alloc.requests['memory'], kind, name, container, namespace)
+            set_metric(KRR_ALLOCATIONS_LIMITS_CPU, alloc.limits['cpu'], kind, name, container, namespace)
+            set_metric(KRR_ALLOCATIONS_LIMITS_MEMORY, alloc.limits['memory'], kind, name, container, namespace)
+            set_metric(KRR_RECOMMENDED_REQUESTS_CPU, alloc.requests['cpu'].value, kind, name, container, namespace, rec.requests['cpu'].severity)
+            set_metric(KRR_RECOMMENDED_REQUESTS_MEMORY, alloc.requests['memory'].value, kind, name, container, namespace, rec.requests['memory'].severity)
+            set_metric(KRR_RECOMMENDED_LIMITS_CPU, alloc.limits['cpu'].value, kind, name, container, namespace, rec.limits['cpu'].severity)
+            set_metric(KRR_RECOMMENDED_LIMITS_MEMORY, alloc.limits['memory'].value, kind, name, container, namespace, rec.limits['memory'].severity)

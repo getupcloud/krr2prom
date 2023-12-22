@@ -35,7 +35,8 @@ def parse_time(delta):
 @formatters.register(display_name='prometheus-exporter', rich_console=False)
 def prometheus_exporter_formatter(result: Result) -> str:
     collect_metrics(result)
-    return 'Done metrics'
+    return generate_latest()
+    #return 'Done metrics'
 
 
 def krr_runner(scan_frequency, stop_event):
