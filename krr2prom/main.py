@@ -65,7 +65,7 @@ KRR_RECOMMENDED_LIMITS_MEMORY = Gauge(
 
 def set_metric(metric, value, *labels):
     try:
-        print(metric, labels, value, float(value))
+        print(metric, labels, value)
         metric.labels(*labels).set(float(value))
     except TypeError:
         pass
