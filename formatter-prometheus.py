@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 
 import time
-from prometheus_client import generate_latest
 from robusta_krr.api import formatters
 from robusta_krr.api.models import Result
 from krr2prom import robusta_krr, collect_metrics
