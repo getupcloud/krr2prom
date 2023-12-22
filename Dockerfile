@@ -23,4 +23,4 @@ COPY formatter-prometheus-exporter.py formatter-prometheus.py entrypoint require
 
 RUN pip install -r requirements.txt
 
-CMD ["/app/entrypoint"]
+ENTRYPOINT ["/app/entrypoint"]
