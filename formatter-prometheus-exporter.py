@@ -47,11 +47,11 @@ def krr_runner(scan_frequency, stop_event):
             cycle += 1
             continue
 
-        print(f"START KRR-{cycle}")
+        print(f"START KRR CYCLE {int(cycle/scan_frequency)}")
         t = Thread(target=robusta_krr.run)
         t.start()
         t.join()
-        print(f"END KRR-{cycle}")
+        print(f"END KRR CYCLE {cycle}")
         cycle = 1
 
     print("STOP KRR THREAD")
