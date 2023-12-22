@@ -41,7 +41,7 @@ def prometheus_exporter_formatter(result: Result) -> str:
 def krr_runner(scan_frequency, stop_event):
     print("START KRR THREAD")
     cycle = 0
-    while stop_event.wait(1):
+    while not stop_event.wait(1):
         if cycle > 0 and cycle < scan_frequency:
             cycle += 1
             continue
