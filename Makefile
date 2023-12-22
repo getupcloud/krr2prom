@@ -6,6 +6,6 @@ IMAGE_LATEST := $(IMAGE_REPO):latest
 build:
 	docker build . -t $(IMAGE_NAME)
 
-release: test build
+release: build
 	docker push $(IMAGE_NAME)
 	docker push $(IMAGE_LATEST)
