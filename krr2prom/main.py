@@ -64,8 +64,12 @@ KRR_RECOMMENDED_LIMITS_MEMORY = Gauge(
 
 
 def set_metric(metric, value, *labels):
-    if isinstance(value, (int, float)):
-        metric.labels(*labels).set(value)
+    try:
+        if isinstance(value.value, (int, float)):
+            metric.labels(*labels).set(value.value)
+    except (TypeError, AttributeError):
+        if isinstance(value, (int, float)):
+            metric.labels(*labels).set(value)
 
 
 def collect_metrics(result):

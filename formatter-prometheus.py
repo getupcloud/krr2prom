@@ -8,7 +8,7 @@ from krr2prom import robusta_krr, collect_metrics, generate_latest
 @formatters.register(display_name='prometheus', rich_console=False)
 def prometheus_formatter(result: Result) -> str:
     collect_metrics(result)
-    return generate_latest()
+    return str(generate_latest(), encoding='utf-8')
 
 # Run it as `python3 ./formatter-prometheus.py simple --formater prometheus`
 if __name__ == '__main__':
