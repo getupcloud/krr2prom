@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys
-from prometheus_client import Gauge
+from prometheus_client import Gauge, generate_latest
 import robusta_krr
 
 
