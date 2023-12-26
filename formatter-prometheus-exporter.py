@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import sys, os, re
-from datetime import timedelta
+from datetime import timedelta, datetime
 from threading import Thread, Event
 from flask import Flask
 from werkzeug.middleware.dispatcher import DispatcherMiddleware
@@ -35,7 +35,8 @@ def parse_time(delta):
 @formatters.register(display_name='prometheus-exporter', rich_console=False)
 def prometheus_exporter_formatter(result: Result) -> str:
     collect_metrics(result)
-    return f'Processed {len(result.scans)} scans. Score={result.score}'
+    end_time = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+    return f'[{end_time}] Processed {len(result.scans)} scans. Score={result.score}'
 
 
 def krr_runner(scan_frequency, stop_event):
@@ -46,13 +47,15 @@ def krr_runner(scan_frequency, stop_event):
         if cycle > 0 and cycle < scan_frequency:
             cycle += 1
             continue
-        cycle = 1
+        cycle = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
         round += 1
-        print(f'START KRR ROUND {round}')
+        start_time = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+        print(f'[{start_time}] START KRR ROUND {round}')
         t = Thread(target=robusta_krr.run)
         t.start()
         t.join()
-        print(f'END KRR ROUND {round}')
+        end_time = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+        print(f'[{end_time}] END KRR ROUND {round}')
 
     print('STOP KRR THREAD')
 
