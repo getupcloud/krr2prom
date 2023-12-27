@@ -47,7 +47,7 @@ def krr_runner(scan_frequency, stop_event):
         if cycle > 0 and cycle < scan_frequency:
             cycle += 1
             continue
-        cycle = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
+        cycle = 1
         round += 1
         start_time = datetime.now().strftime("%d/%b/%Y %H:%M:%S")
         print(f'[{start_time}] START KRR ROUND {round}')
