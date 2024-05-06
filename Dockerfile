@@ -1,5 +1,7 @@
 FROM debian:bullseye
 
+ARG KRR_GIT_TAG
+
 RUN apt update \
     && apt install -y \
         apt-utils \
@@ -11,7 +13,9 @@ RUN apt update \
         python3 \
         python3-pip \
     && git clone https://github.com/robusta-dev/krr.git /krr \
-    && pip install -r /krr/requirements.txt \
+    && cd krr \
+    && git checkout -b $KRR_GIT_TAG $KRR_GIT_TAG \
+    && pip install -r requirements.txt \
     && apt-get clean
 
 WORKDIR /app
