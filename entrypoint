@@ -32,6 +32,5 @@ case "$EXEC_MODE" in
         exit 1
 esac
 
-COMMAND="python3 formatter-${EXEC_MODE}.py simple --formatter $EXEC_MODE ${@}"
 set -x
-exec $COMMAND
+exec python3 formatter-${EXEC_MODE}.py simple --formatter $EXEC_MODE "${@}"
