@@ -13,4 +13,4 @@ tag:
 release: build tag
 	docker push $(IMAGE_NAME)
 	docker push $(IMAGE_LATEST)
-	git push --tags
+	git push origin v$(IMAGE_TAG):v$(IMAGE_TAG)
