@@ -6,6 +6,10 @@ IMAGE_LATEST := $(IMAGE_REPO):latest
 build:
 	docker build . -t $(IMAGE_NAME) --build-arg KRR_GIT_TAG=v$(IMAGE_TAG)
 
-release: build
+tag:
+	git tag v$(IMAGE_TAG)
+
+release: build tag
 	docker push $(IMAGE_NAME)
 	docker push $(IMAGE_LATEST)
+	git push --tags
