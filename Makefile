@@ -1,4 +1,4 @@
-IMAGE_TAG    := 1.8.3
+IMAGE_TAG    := 1.11.0
 IMAGE_REPO   := getupcloud/krr2prom
 IMAGE_NAME   := $(IMAGE_REPO):$(IMAGE_TAG)
 IMAGE_LATEST := $(IMAGE_REPO):latest

@@ -1,4 +1,4 @@
-FROM debian:bullseye
+FROM ubuntu:24.04
 
 ARG KRR_GIT_TAG
 
@@ -15,7 +15,7 @@ RUN apt update \
     && git clone https://github.com/robusta-dev/krr.git /krr \
     && cd krr \
     && git checkout -b $KRR_GIT_TAG $KRR_GIT_TAG \
-    && pip install -r requirements.txt \
+    && pip install -r requirements.txt  --break-system-packages \
     && apt-get clean
 
 WORKDIR /app
@@ -23,9 +23,9 @@ WORKDIR /app
 ENV PYTHONPATH=/app:/krr
 
 COPY requirements.txt /app/
-RUN pip install -r requirements.txt
+RUN pip install -r requirements.txt --break-system-packages
 
 COPY krr2prom /app/krr2prom
-COPY formatter-prometheus-exporter.py formatter-prometheus.py entrypoint requirements.txt /app/
+COPY formatter-prometheus-exporter.py formatter-prometheus.py entrypoint /app/
 
 ENTRYPOINT ["/app/entrypoint"]
