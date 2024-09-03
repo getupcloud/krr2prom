@@ -1,6 +1,4 @@
-FROM ubuntu:24.04
-
-ARG KRR_GIT_TAG
+FROM python:3.11-slim
 
 RUN apt update \
     && apt install -y \
@@ -12,11 +10,14 @@ RUN apt update \
         procps \
         python3 \
         python3-pip \
-    && git clone https://github.com/robusta-dev/krr.git /krr \
-    && cd krr \
-    && git checkout -b $KRR_GIT_TAG $KRR_GIT_TAG \
-    && pip install -r requirements.txt  --break-system-packages \
     && apt-get clean
+
+ARG KRR_GIT_REF
+
+RUN git clone https://github.com/robusta-dev/krr.git /krr \
+    && cd krr \
+    && git switch $KRR_GIT_REF \
+    && pip install -r requirements.txt --break-system-packages
 
 WORKDIR /app
 
