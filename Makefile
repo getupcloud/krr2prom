@@ -8,7 +8,7 @@ build:
 	docker build . -t $(IMAGE_NAME) --build-arg KRR_GIT_REF=$(KRR_GIT_REF)
 
 tag:
-	git tag v$(IMAGE_TAG)
+	git tag $(IMAGE_TAG)
 
 release: build tag
 	docker push $(IMAGE_NAME)
